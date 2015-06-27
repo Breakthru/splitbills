@@ -1,0 +1,1 @@
+i can try k-means on the descriptions with lots of K, use the labels as features for a linear classifier
