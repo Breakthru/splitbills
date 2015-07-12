@@ -1,0 +1,10 @@
+<h2>Transactions</h2>
+<ul>
+{% for t in transactions_list %}
+<li>
+{{ t.date }}
+&nbsp;|&nbsp;£ {{ t.amount }}
+&nbsp;|&nbsp;{{ t.description }}
+</li>
+{% endfor %}
+</ul><hr/>
