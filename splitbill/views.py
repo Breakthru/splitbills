@@ -1,16 +1,19 @@
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render, render_to_response, get_object_or_404
+from django.http import HttpResponseRedirect
 from .forms import UploadFileForm
 
+
 def home(request):
-  context = {'name':'world'}
-  return render_to_response('splitbill/index.html', context)
-  
-def upload_file(request):
+    context = {'name': 'world', 'msg': 'file not valid'}
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            handle_uploaded_file(request.FILES['file'])
-            return HttpResponseRedirect('/success/url/')
+            context['msg'] = 'valid'
+            for line in request.FILES['file']:
+                print line
+        return HttpResponseRedirect('/splitbill')
     else:
         form = UploadFileForm()
-    return render_to_response('upload.html', {'form': form})
+        context['form'] = form
+
+    return render(request, 'splitbill/index.html', context)
