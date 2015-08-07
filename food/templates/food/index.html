@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <title>
+    Marco's wonderful food application suite
+    </title>
+  </head>
+  <body>
+    <div id="list" style="float:right; border:1px solid black;">
+    {% for i in ingredients_list %}
+    {{i}}<br/>
+    {% endfor %}
+    </div>
+    {% for d in days %}
+    <div id="{{d}}">
+    <h2>{{d}}</h2>
+      <select>
+	{% for r in recipes_list %}
+	<option>{{ r.name }}</option>
+      {% endfor %}
+      </select>
+    </div>
+    {% endfor %}
+  </body>
+</html>
