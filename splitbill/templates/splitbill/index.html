@@ -14,5 +14,16 @@
         <input type="submit" value="Submit" />
         </form>
     {% endif %}
+    <div id="transactions">
+    {% if transactions %}
+    <ul>
+      {% for t in transactions %}
+      <li>       
+        <span class="entry"> {{ t.date }}, {{ t.amount }}, {{ t.description }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    </div>
   </body>
 </html>
