@@ -1,5 +1,9 @@
 from django.db import models
 
+class Card(models.Model):
+  """ a credit card """
+  name = models.CharField(max_length=16)
+
 class Tag(models.Model):
   """ tag transactions """
   name = models.CharField(max_length=25)
