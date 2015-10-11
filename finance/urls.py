@@ -19,5 +19,6 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^splitbill/', include('splitbill.urls')),
+    url(r'^offset/', include('offset.urls')),
     url(r'^food/', include('food.urls')),
 ]

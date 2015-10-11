@@ -4,7 +4,7 @@
 # Create your views here.
 from offset.models import Transaction
 from offset.models import Mortgage
-from django.http import HttpResponse
+from django.shortcuts import render_to_response
 from datetime import date
 from utils import MortgageCalculator
 import locale
@@ -37,14 +37,20 @@ def calculate():
     return output
 
 def home(request):
-    transactions_list = Transaction.objects.all().order_by('-date')
+    mtg_list = Mortgage.objects.all()
+    return render_to_response('offset/index.html', {'mtg_list': mtg_list})
+
+
+def mtg(request, id):
+    transactions_list = Transaction.objects.filter(mtg_id=id).order_by('-date')
     output = "<h1>Marco's mortgage calculator program</h1><hr>\n"
     output += calculate()
+    context = {}
+    context['calculator'] = output
+    output = ""
     output += '<h2>Transactions list</h2><br><ul>'
     for t in transactions_list:
         output += '<li>'+str(t.date)+' , '+str(t.type)+' , &pound;'+str(t.amount)+'</li>'
     output += '</ul>'
-
-    return HttpResponse(output)
-
-
+    context['transactions'] = output
+    return render_to_response('offset/mortgage.html', context)

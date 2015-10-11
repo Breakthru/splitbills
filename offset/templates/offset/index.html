@@ -1,0 +1,14 @@
+<html>
+<head>
+<title>
+Marco's Mortgage Calculator
+</title>
+</head>
+<body>
+<ul>
+{% for m in mtg_list %}
+<li>{{ m.start_date }} , {{ m.initial_balance }} <a href="{% url 'offset-mtg' id=m.id %}">view</a></li>
+{% endfor %}
+</ul>
+</body>
+</html>
