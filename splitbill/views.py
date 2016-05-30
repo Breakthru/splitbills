@@ -2,12 +2,12 @@ from django.shortcuts import render, render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect
 from .forms import UploadFileForm
 from models import Transaction, Tag
-from santander.ccreport import ccparser
+from ccparser import ccparser
 from datetime import date, datetime
 
 def add_transactions(f):
     p = ccparser()
-    p.parse(f)
+    p.parseTescoBank(f)
     for line in p.transactions:
         fields = line.split(';')
         tr = Transaction()
