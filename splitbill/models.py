@@ -10,7 +10,7 @@ class Tag(models.Model):
  
 class Transaction(models.Model):
   date = models.DateField()
-  transaction_date = models.DateField(blank=True)  
+  transaction_date = models.DateField(null=True)  
   amount = models.IntegerField()
   description = models.TextField()
   tags = models.ManyToManyField(Tag, blank=True)
