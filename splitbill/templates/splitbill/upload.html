@@ -8,7 +8,7 @@
     </style>
  </head>
   <body>
-    <h1>Marcos finance app</h1>
+    <h1>Marcos finance app :: upload data for {{ account.name }}</h1>
     {% if form %}
         <form enctype="multipart/form-data" action="/splitbill/" method="post">
         {% csrf_token %}
@@ -16,19 +16,5 @@
         <input type="submit" value="Submit" />
         </form>
     {% endif %}
-    <div id="transactions">
-    {% if transactions %}
-    <ul>
-      {% for t in transactions %}
-      <li>       
-        <p> {{ t.date }}, {{ t.amount }}, {{ t.description }}</p>
-        {% for a in t.tags.all %}
-        <button style='tag'>{{ a.name }}</button>
-        {% endfor %}
-      </li>
-      {% endfor %}
-    </ul>
-    {% endif %}
-    </div>
   </body>
 </html>
