@@ -1,9 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import User
 
 class Account(models.Model):
     name = models.TextField()
-    user = models.ForeignKey(User)
 
 class Tag(models.Model):
   """ tag transactions """

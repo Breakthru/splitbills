@@ -4,13 +4,11 @@
     Marco's wonderful finance application suite
     </title>
     <style>
-      li { background: gray; color: navy; }
-      li:nth-child(odd) { background: navy; color: gray; }
+
     </style>
-  </head>
+ </head>
   <body>
-    <h1> Hello, {{name}}!</h1>
-    {{ msg }}
+    <h1>Marcos finance app</h1>
     {% if form %}
         <form enctype="multipart/form-data" action="/splitbill/" method="post">
         {% csrf_token %}
@@ -23,7 +21,10 @@
     <ul>
       {% for t in transactions %}
       <li>       
-        <span class="entry"> {{ t.date }}, {{ t.amount }}, {{ t.description }}</span>
+        <p> {{ t.date }}, {{ t.amount }}, {{ t.description }}</p>
+        {% for a in t.tags.all %}
+        <button style='tag'>{{ a.name }}</button>
+        {% endfor %}
       </li>
       {% endfor %}
     </ul>

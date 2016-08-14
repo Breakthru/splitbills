@@ -1,11 +1,11 @@
 from django.shortcuts import render, render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect
 from .forms import UploadFileForm
-from models import Transaction, Tag
+from models import Transaction, Tag, Account
 from ccparser import ccparser
 from datetime import date, datetime
 
-def add_transactions(f):
+def add_transactions(f, account):
     p = ccparser()
     p.parseTescoBank(f)
     for line in p.transactions:
@@ -14,19 +14,25 @@ def add_transactions(f):
         tr.date = datetime.strptime(fields[0],'%Y-%m-%d').date()
         tr.description = fields[2]
         tr.amount = int(100.0*float(fields[3]))
+        tr.account = account
         tr.save()
 
 
 def home(request):
     t_list = Transaction.objects.all()
-    context = {'name': 'world', 'msg': 'file not valid','transactions': t_list}
+    context = { 'transactions': t_list }    
+    return render(request, 'splitbill/index.html', context)
+
+def upload(request, account):
+    context = {'msg': 'file not valid'}
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             context['msg'] = 'valid'
-            add_transactions(request.FILES['file'])
+            add_transactions(request.FILES['file'], get_object_or_404(Account, pk=account))
     else:
         form = UploadFileForm()
         context['form'] = form
 
-    return render(request, 'splitbill/index.html', context)
+    return render(request, 'splitbill/upload.html', context)
+
