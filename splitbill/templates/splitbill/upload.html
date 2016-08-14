@@ -10,7 +10,7 @@
   <body>
     <h1>Marcos finance app :: upload data for {{ account.name }}</h1>
     {% if form %}
-        <form enctype="multipart/form-data" action="/splitbill/" method="post">
+        <form enctype="multipart/form-data" action="" method="post">
         {% csrf_token %}
         {{ form }}
         <input type="submit" value="Submit" />

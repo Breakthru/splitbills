@@ -8,7 +8,10 @@ from datetime import date, datetime
 
 def add_transactions(f, account):
     p = ccparser()
-    p.parseTescoBank(f)
+    if (account.type == "TESCO"):
+        p.parseTescoBank(f)
+    else:
+        raise Exception("Account %s bad type %s" % (account.name, account.type))
     for line in p.transactions:
         fields = line.split(';')
         tr = Transaction()
@@ -20,7 +23,7 @@ def add_transactions(f, account):
 
 
 def home(request):
-    t_list = Transaction.objects.all()
+    t_list = Transaction.objects.all().order_by('-date')
     context = { 'transactions': t_list }
     return render(request, 'splitbill/index.html', context)
 
@@ -30,8 +33,8 @@ def upload(request, account):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             add_transactions(request.FILES['file'], get_object_or_404(Account, pk=account))
-            return HttpResponseRedirect(reverse('splitbill:home'))
+            return HttpResponseRedirect(reverse('splitbill.home'))
     else:
         form = UploadFileForm()
-        context = {'form':form}
+        context = {'form':form, 'account':get_object_or_404(Account, pk=account)}
         return render(request, 'splitbill/upload.html', context)

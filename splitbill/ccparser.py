@@ -2,7 +2,7 @@
 
 import sys
 import re
-
+import logging
 
 class ccparser:
   """parser for santander credit card report file"""
@@ -12,13 +12,27 @@ class ccparser:
   def parseTescoBank(self, fileToParse):
     """ transaction list will be in self.transactions """
     for line in fileToParse:
-      print line
-      date = '2015-01-01'
-      cardno = '0638'
-      description = 'something stupid like i love you'
-      amount = '0.00'
+      fields = line.split('\t')
+      if len(fields)!=9:
+          continue
+      for i in range(9):
+          print "[%s]: %s" % (i, fields[i])
+      date = fields[0].strip()
+      cardno = fields[2].strip()
+      description = fields[4].strip()
+      try:
+          money_in = float(fields[7])
+      except ValueError:
+          money_in = 0
+
+      try:
+          money_out = float(fields[8])
+      except ValueError:
+          money_out = 0
+
+      amount = money_out - money_in
       self.transactions.append("%s;%s;%s;%s" % (date, cardno, description, amount))
-    
+
 
   def parseSantander(self, f):
     """ f is the file object to parse """

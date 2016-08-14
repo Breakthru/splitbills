@@ -9,25 +9,22 @@
  </head>
   <body>
     <h1>Marcos finance app</h1>
-    {% if form %}
-        <form enctype="multipart/form-data" action="/splitbill/" method="post">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="Submit" />
-        </form>
-    {% endif %}
     <div id="transactions">
     {% if transactions %}
-    <ul>
+    <table border="1">
       {% for t in transactions %}
-      <li>       
-        <p> {{ t.date }}, {{ t.amount }}, {{ t.description }}</p>
-        {% for a in t.tags.all %}
-        <button style='tag'>{{ a.name }}</button>
-        {% endfor %}
-      </li>
+      <tr>
+        <td> {{ t.date }} </td>
+        <td> {{ t.amount }}p </td>
+        <td> {{ t.description }} </td>
+        <td>
+          {% for a in t.tags.all %}
+          <button style='tag'>{{ a.name }}</button>
+          {% endfor %}
+        </td>
+      </tr>
       {% endfor %}
-    </ul>
+    </table>
     {% endif %}
     </div>
   </body>

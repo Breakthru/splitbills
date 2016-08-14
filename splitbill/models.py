@@ -20,5 +20,8 @@ class Transaction(models.Model):
   amount = models.IntegerField()
   description = models.TextField()
   tags = models.ManyToManyField(Tag, blank=True)
+
+  ordering = ['-date']
+
   def __str__(self):
     return str(self.date)+" "+str(self.amount)
