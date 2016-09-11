@@ -22,11 +22,15 @@ def add_transactions(f, account):
         tr.save()
 
 
+def test(request):
+    return render(request, 'splitbill/jquery-ui.html', {})
+
+
 def home(request):
     t_list = Transaction.objects.all().order_by('-date')
     context = { 'transactions': t_list }
     return render(request, 'splitbill/index.html', context)
-
+    
 
 def upload(request, account):
     if request.method == 'POST':
