@@ -37,15 +37,14 @@ def build_transaction_list(mortgage):
     transactions.reverse()
     return transactions
 
-def calculate():
+def calculate(mtg):
     output = ""
     display = """<table border="1">
     <tr><td>Date</td><td>Type</td><td>Amount</td>
     <td>Balance</td><td>Pot</td><td>Interest paid</td>
     <td>Interest to pot</td><td>Paid capital</td><td>Paid pot</td></tr>
-    """    
-    mtg = Mortgage.objects.all()[0]
-    transactions_list = build_transaction_list(mtg) #Transaction.objects.all().order_by('date')
+    """        
+    transactions_list = build_transaction_list(mtg)
     mtgcalc = MortgageCalculator(balance=mtg.initial_balance, rate=mtg.initial_rate, term=mtg.term, d0=mtg.start_date)
     for t in transactions_list:
         mtgcalc.do_transaction(t)
@@ -69,12 +68,12 @@ def home(request):
 
 
 def mtg(request, id):
-    transactions_list = Transaction.objects.filter(mtg_id=id).order_by('-date')
-    output = calculate()    
-    # output = ""
-    # output += '<h2>Transactions list</h2><br><ul>'
-    # for t in transactions_list:
-    #     output += '<li>'+str(t.date)+' , '+str(t.type)+' , &pound;'+str(t.amount)+'</li>'
-    # output += '</ul>'
-    # context['transactions'] = output    
-    return render(request, 'offset/mortgage.html', {'table': output})
+    mtg = Mortgage.objects.filter(id=id)[0]
+    table = calculate(mtg)    
+    transactions_list = build_transaction_list(mtg)
+    transactions = ""
+    transactions += '<h2>Transactions list</h2><br><ul>'
+    for t in transactions_list:
+        transactions += '<li>'+str(t.date)+' , '+str(t.type)+' , &pound;'+str(t.amount)+'</li>'
+    transactions += '</ul>'    
+    return render(request, 'offset/mortgage.html', {'table': table, 'transactions': transactions})
