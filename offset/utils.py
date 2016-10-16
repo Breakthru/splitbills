@@ -61,6 +61,10 @@ class MortgageCalculator:
     self.interest_saved = 0
 
   def pay_sum(self,amt,day):
+    self.add_daily_interest_pot(day)
+    self.interest_saved = self.pot_interest_accrued/100.0
+    self.s = round(self.s+self.pot_interest_accrued,2)
+    self.pot_interest_accrued=0
     paid = round(amt,2)
     capital_repaid = round(self.monthly_repayment() - self.monthly_interest())
     self.interest_paid = round(self.monthly_interest())/100.0
@@ -71,24 +75,6 @@ class MortgageCalculator:
     self.to_savings = amt/100.0
     print "Adding "+str(round(amt,2))+" to savings pot from your "+str(paid)+" payment"
     self.s = round(self.s+amt,2) # any remaining into savings pot
-    self.interest_saved = 0
-
-  def pay_minimum(self, amt, day):
-    self.add_daily_interest_pot(day)
-    self.interest_saved = self.pot_interest_accrued/100.0
-    print str(day)+": interests paid into pot "+str(self.pot_interest_accrued)
-    self.s = round(self.s+self.pot_interest_accrued,2)
-    self.pot_interest_accrued=0
-    paid = round(amt,2)
-    capital_repaid = round(self.monthly_repayment() - self.monthly_interest())
-    self.interest_paid = round(self.monthly_interest())/100.0
-    amt -= self.monthly_interest() # pay interest
-    amt -= capital_repaid # repay capital
-    if amt > 0:
-        print "warning: repayment transaction should equal minimum only"
-    self.c -= capital_repaid
-    self.to_capital = capital_repaid/100.0 # pennies
-    self.to_savings = 0
 
   def transfer_savings(self,amt_in_pennies,date):
     """ move money from savings pot to mortgage balance"""
@@ -116,9 +102,6 @@ class MortgageCalculator:
     elif t.type == "MONTHLY":
         # pay interest and repayment, put the rest into savings pot
         self.pay_sum(amt_in_pennies,t.date)    
-    elif t.type == "REPAYMENT":
-        # a monthly payment exactly equal to the minimum
-        self.pay_minimum(amt_in_pennies,t.date)
     elif t.type == "INTEREST":
         # a change in the interest rate
         self.add_daily_interest_pot(t.date)
