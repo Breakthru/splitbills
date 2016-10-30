@@ -8,6 +8,12 @@ import logging
 def remove_non_ascii(s):
   return ''.join([i for i in s if ord(i) < 128])
 
+def date_convert(s):
+  """ convert dd/mm/yyyy into yyyy-mm-dd """
+  l = s.split('/')
+  l.reverse()
+  return '-'.join(l)
+
 class ccparser:
   """parser for santander credit card report file"""
   def __init__(self):
@@ -19,15 +25,16 @@ class ccparser:
       fields = line.split(',')
       if len(fields)!=10:
           continue
-      for i in range(9):
-          print "[%s]: %s" % (i, fields[i])
-      date = fields[0].strip()
+      #for i in range(10):
+      #    print "[%s]: %s" % (i, fields[i])
+      date = date_convert(fields[0])
       cardno = ""
       description = " ".join(fields[3:6])
       try:
           amount = float(remove_non_ascii(fields[2]))
       except ValueError:
-          amount = 0.0
+          logging.warn(line)
+          continue
 
       self.transactions.append("%s;%s;%s;%s" % (date, cardno, description, amount))
 
