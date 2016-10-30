@@ -1,8 +1,12 @@
 #!/usr/bin/python
+# -*- coding: UTF-8 -*-
 
 import sys
 import re
 import logging
+
+def remove_non_ascii(s):
+  return ''.join([i for i in s if ord(i) < 128])
 
 class ccparser:
   """parser for santander credit card report file"""
@@ -12,25 +16,19 @@ class ccparser:
   def parseTescoBank(self, fileToParse):
     """ transaction list will be in self.transactions """
     for line in fileToParse:
-      fields = line.split('\t')
-      if len(fields)!=9:
+      fields = line.split(',')
+      if len(fields)!=10:
           continue
       for i in range(9):
           print "[%s]: %s" % (i, fields[i])
       date = fields[0].strip()
-      cardno = fields[2].strip()
-      description = fields[4].strip()
+      cardno = ""
+      description = " ".join(fields[3:6])
       try:
-          money_in = float(fields[7])
+          amount = float(remove_non_ascii(fields[2]))
       except ValueError:
-          money_in = 0
+          amount = 0.0
 
-      try:
-          money_out = float(fields[8])
-      except ValueError:
-          money_out = 0
-
-      amount = money_out - money_in
       self.transactions.append("%s;%s;%s;%s" % (date, cardno, description, amount))
 
 
@@ -79,7 +77,7 @@ class ccparser:
 if __name__=='__main__':
   p = ccparser()
   with open(sys.argv[1],'r') as fp:
-    p.parse(fp)
+    p.parseTescoBank(fp)
   # print transactions in reverse order
   for t in p.transactions:
     print t
