@@ -1,5 +1,5 @@
 from django.shortcuts import render, render_to_response, get_object_or_404
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse
 from django.core.urlresolvers import reverse
 from .forms import UploadFileForm
 from models import Transaction, Tag, Account
@@ -20,6 +20,7 @@ def add_transactions(f, account):
         tr.amount = int(100.0*float(fields[3]))
         tr.account = account
         tr.save()
+    return p.transactions
 
 
 def test(request):
@@ -36,8 +37,8 @@ def upload(request, account):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            add_transactions(request.FILES['file'], get_object_or_404(Account, pk=account))
-            return HttpResponseRedirect(reverse('splitbill.home'))
+            t = add_transactions(request.FILES['file'], get_object_or_404(Account, pk=account))
+            return HttpResponse("<br/>".join(t))
     else:
         form = UploadFileForm()
         context = {'form':form, 'account':get_object_or_404(Account, pk=account)}
