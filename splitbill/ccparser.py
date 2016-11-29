@@ -79,7 +79,7 @@ class ccparser:
 if __name__=='__main__':
   p = ccparser()
   with open(sys.argv[1],'r') as fp:
-    p.parse(fp)
+    p.parseTescoBank(fp)
   # print transactions in reverse order
   for t in p.transactions:
     print t
