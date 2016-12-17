@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 from django.test import TestCase
 from StringIO import StringIO
 from ccparser import ccparser
@@ -5,12 +6,12 @@ from ccparser import ccparser
 # Create your tests here.
 class CCParserTest(TestCase):
     def test_example_report(self):
-        f = StringIO("""2003-09-012003-11-015423
-        Date			Card no.			Description				Money in	Money out
-        -------------------------------------------------------------------------------------------------------------------------------
-        2003-09-05		** 5423		PURCHASE - DOMESTIC            LONDON                                 				8.48
-        2003-09-05		** 5423		PURCHASE - DOMESTIC            LONDON                                 				11.10
+        f = StringIO("""
+Transaction Date, Posting Date, Billing Amount, Merchant, Merchant City , Merchant State , Merchant Zip , Reference Number , Debit/Credit Flag , SICMCC Code
+19/09/2016,20/09/2016,£10.55,"MERCHANT A","Example PC",,PC0 5EA,1234567890,D,1234
+19/09/2016,20/09/2016,£5.69,"MERCHANT PLC SACA","Example",GBR,PC 8NB,123456789,D,1234
 """)
         p = ccparser()
         p.parseTescoBank(f)
         self.assertEqual(len(p.transactions), 2)
+	self.assertTrue( "10.55" in p.transactions[0])
