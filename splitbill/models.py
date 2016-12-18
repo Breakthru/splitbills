@@ -25,3 +25,17 @@ class Transaction(models.Model):
 
   def __str__(self):
     return str(self.date)+" "+str(self.amount)
+
+class RawTransaction(models.Model):
+    data = models.TextField()
+    date_added = models.DateTimeField()
+
+    ordering = ['-date_added']
+    def __str__(self):
+        return self.data
+
+class RawLabels(models.Model):
+    """ Raw labels data collected by user """
+    transaction = models.ForeignKey(RawTransaction)
+    tag = models.ForeignKey(Tag)
+
