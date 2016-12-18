@@ -1,7 +1,10 @@
 from django.test import TestCase
+from django.test import Client
 
 # Create your tests here.
-class MyTest(TestCase):
-    def test_case(self):
-        self.assertEqual(1, 1)
-        
+class TestUpload(TestCase):
+    def test_csv(self):
+        c = Client()
+        response = c.post('/upload')
+
+
