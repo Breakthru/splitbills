@@ -34,3 +34,8 @@ class RawTransaction(models.Model):
     def __str__(self):
         return self.data
 
+class RawLabels(models.Model):
+    """ Raw labels data collected by user """
+    transaction = models.ForeignKey(RawTransaction)
+    tag = models.ForeignKey(Tag)
+
