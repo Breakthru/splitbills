@@ -36,7 +36,9 @@ class Transaction(models.Model):
 
   def __str__(self):
     return str(self.date)+" "+str(self.amount)
-
+  @property
+  def display_amount(self):
+      return u"\xA3 %1.02f" % (self.amount / 100.0,)
 
 class RawLabels(models.Model):
     """ Raw labels data collected by user """

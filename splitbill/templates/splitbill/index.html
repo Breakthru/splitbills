@@ -4,7 +4,13 @@
     Marco's wonderful finance application suite
     </title>
     <style>
-
+      .transaction {
+        display: table-row;
+      }
+      .field {
+        padding-right: 2em;
+        display: table-cell;
+      }
     </style>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <link rel="stylesheet" href="jquery-ui.min.css">
@@ -15,20 +21,19 @@
     <h1>Marcos finance app</h1>
     <div id="transactions">
     {% if transactions %}
-    <table border="1">
       {% for t in transactions %}
-      <tr>
-        <td> {{ t.date }} </td>
-        <td> {{ t.amount }}p </td>
-        <td> {{ t.description }} </td>
-        <td>
+      <div class="transaction">
+        <div class="field"> {{ t.account.name }} </div>
+        <div class="field"> {{ t.date|date:"D d M Y" }} </div>
+        <div class="field"> {{ t.display_amount }} </div>
+        <div class="field"> {{ t.description }} </div>
+        <div class="field">
           {% for a in t.tags.all %}
           <button style='tag'>{{ a.name }}</button>
           {% endfor %}
-        </td>
-      </tr>
+        </div>
+      </div>
       {% endfor %}
-    </table>
     {% endif %}
     </div>
   </body>

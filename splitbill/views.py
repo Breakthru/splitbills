@@ -23,15 +23,16 @@ def add_transactions(f, account):
         raw.raw_data = json.dumps(t)
         raw.date_added = datetime.now(pytz.utc).date()
         raw.account = account
+        raw.save()
 
         tr = Transaction()
+        tr.raw = raw
         tr.date = datetime.strptime(t[fields["date"]], "%d/%m/%Y").date()
         tr.description = " ".join([t[d] for d in fields["description"]])
         tr.amount = int(100*float(t[fields["amount"]]))
         tr.account = account
-
         tr.save()
-        raw.save()
+
     return transactions
 
 
