@@ -4,39 +4,28 @@
 import sys
 import re
 import logging
+import csv
 
 def remove_non_ascii(s):
   return ''.join([i for i in s if ord(i) < 128])
 
-def date_convert(s):
-  """ convert dd/mm/yyyy into yyyy-mm-dd """
-  l = s.split('/')
-  l.reverse()
-  return '-'.join(l)
-
 class ccparser:
-  """parser for santander credit card report file"""
-  def __init__(self):
-    self.transactions=[]
+  """parser for santander and tesco credit card report files"""
 
   def parseTescoBank(self, fileToParse):
     """ transaction list will be in self.transactions """
-    for line in fileToParse:
-      fields = line.split(',')
-      if len(fields)!=10:
-          continue
-      #for i in range(10):
-      #    print "[%s]: %s" % (i, fields[i])
-      date = date_convert(fields[0])
-      cardno = ""
-      description = " ".join(fields[3:6])
-      try:
-          amount = float(remove_non_ascii(fields[2]))
-      except ValueError:
-          logging.warn(line)
-          continue
-
-      self.transactions.append("%s;%s;%s;%s" % (date, cardno, description, amount))
+    json_out = []
+    reader = csv.reader(fileToParse)
+    header = None
+    for row in reader:
+        if not header:
+            header = [s.strip() for s in row]
+        else:
+            transaction = {}
+            for i in range(len(header)):
+                transaction[header[i]] = remove_non_ascii(row[i])
+            json_out.append(transaction)
+    return json_out
 
 
   def parseSantander(self, f):
@@ -84,7 +73,7 @@ class ccparser:
 if __name__=='__main__':
   p = ccparser()
   with open(sys.argv[1],'r') as fp:
-    p.parseTescoBank(fp)
+    transactions = p.parseTescoBank(fp)
   # print transactions in reverse order
-  for t in p.transactions:
+  for t in transactions:
     print t

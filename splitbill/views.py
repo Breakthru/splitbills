@@ -1,26 +1,38 @@
 from django.shortcuts import render, render_to_response, get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from .forms import UploadFileForm
-from models import Transaction, Tag, Account
+from models import Transaction, Tag, Account, RawTransaction
 from ccparser import ccparser
 from datetime import date, datetime
+import pytz
+import json
 
 def add_transactions(f, account):
     p = ccparser()
     if (account.type == "TESCO"):
-        p.parseTescoBank(f)
+        transactions = p.parseTescoBank(f)
+        fields = {}
+        fields["date"] = "Transaction Date"
+        fields["amount"] = "Billing Amount"
+        fields["description"] = ["Merchant", "Merchant City", "Merchant State", "Merchant Zip"]
     else:
         raise Exception("Account %s bad type %s" % (account.name, account.type))
-    for line in p.transactions:
-        fields = line.split(';')
+    for t in transactions:
+        raw = RawTransaction()
+        raw.raw_data = json.dumps(t)
+        raw.date_added = datetime.now(pytz.utc).date()
+        raw.account = account
+
         tr = Transaction()
-        tr.date = datetime.strptime(fields[0],'%Y-%m-%d').date()
-        tr.description = fields[2]
-        tr.amount = int(100.0*float(fields[3]))
+        tr.date = datetime.strptime(t[fields["date"]], "%d/%m/%Y").date()
+        tr.description = " ".join([t[d] for d in fields["description"]])
+        tr.amount = int(100*float(t[fields["amount"]]))
         tr.account = account
+
         tr.save()
-    return p.transactions
+        raw.save()
+    return transactions
 
 
 def test(request):
@@ -31,14 +43,14 @@ def home(request):
     t_list = Transaction.objects.all().order_by('-date')
     context = { 'transactions': t_list }
     return render(request, 'splitbill/index.html', context)
-    
+
 
 def upload(request, account):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             t = add_transactions(request.FILES['file'], get_object_or_404(Account, pk=account))
-            return HttpResponse("<br/>".join(t))
+            return HttpResponseRedirect(reverse("home"))
     else:
         form = UploadFileForm()
         context = {'form':form, 'account':get_object_or_404(Account, pk=account)}

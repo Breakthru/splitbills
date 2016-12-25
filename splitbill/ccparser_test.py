@@ -12,9 +12,9 @@ Transaction Date, Posting Date, Billing Amount, Merchant, Merchant City , Mercha
 19/09/2016,20/09/2016,£5.69,"MERCHANT PLC SACA","Example",GBR,PC 8NB,123456789,D,1234
 """)
         p = ccparser()
-        p.parseTescoBank(f)
-        self.assertEqual(len(p.transactions), 2)
-    	self.assertTrue( "10.55" in p.transactions[0])
+        transactions = p.parseTescoBank(f)
+        self.assertEqual(len(transactions), 2)
+    	self.assertEqual(transactions[0]["Billing Amount"], "10.55")
 
 
 if __name__=="__main__":
