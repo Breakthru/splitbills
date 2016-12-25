@@ -5,6 +5,7 @@ from .forms import UploadFileForm
 from models import Transaction, Tag, Account, RawTransaction
 from ccparser import ccparser
 from datetime import date, datetime
+from simple_tag import SimpleTag
 import pytz
 import json
 
@@ -32,6 +33,9 @@ def add_transactions(f, account):
         tr.amount = int(100*float(t[fields["amount"]]))
         tr.account = account
         tr.save()
+
+        rule_tags = SimpleTag()
+        rule_tags.tag(tr)
 
     return transactions
 
