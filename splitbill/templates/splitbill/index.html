@@ -19,7 +19,17 @@
  </head>
   <body>
     <h1>Marcos finance app</h1>
+    <div>
+      <h2>Accounts:</h2>
+      {% for a in accounts %}
+      <div class="account">
+        account: {{ a.name }}
+        type: {{ a.type }}
+      </div>
+      {% endfor %}
+    </div>
     <div id="transactions">
+      <h2>Transactions:</h2>
     {% if transactions %}
       {% for t in transactions %}
       <div class="transaction">

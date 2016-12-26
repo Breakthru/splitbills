@@ -45,8 +45,9 @@ def test(request):
 
 
 def home(request):
+    accounts = Account.objects.all()
     t_list = Transaction.objects.all().order_by('-date')
-    context = { 'transactions': t_list }
+    context = { 'transactions': t_list, 'accounts': accounts }
     return render(request, 'splitbill/index.html', context)
 
 
@@ -55,7 +56,7 @@ def upload(request, account):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             t = add_transactions(request.FILES['file'], get_object_or_404(Account, pk=account))
-            return HttpResponseRedirect(reverse("home"))
+            return HttpResponseRedirect(reverse("splitbill.home"))
     else:
         form = UploadFileForm()
         context = {'form':form, 'account':get_object_or_404(Account, pk=account)}
