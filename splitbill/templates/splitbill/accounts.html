@@ -1,0 +1,13 @@
+{% extends 'splitbill/index.html' %}
+
+{% block accounts %}
+<div>
+  <h2>Accounts:</h2>
+  {% for a in accounts %}
+  <div class="account">
+    account: <a href="{% url 'splitbill.account' a.id %}"> {{ a.name }}</a>
+    type: {{ a.type }}
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

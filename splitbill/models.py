@@ -7,6 +7,16 @@ class Account(models.Model):
         return str(self.name)
 
 
+class Statement(models.Model):
+    date_added = models.DateTimeField()
+    account = models.ForeignKey(Account)
+    date_from = models.DateField(null=True, blank=True)
+    date_to = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return str(self.date_to)
+
+
 class Tag(models.Model):
   """ tag transactions """
   name = models.CharField(max_length=25)
@@ -18,6 +28,7 @@ class RawTransaction(models.Model):
     raw_data = models.TextField()
     date_added = models.DateTimeField()
     account = models.ForeignKey(Account)
+    statement = models.ForeignKey(Statement)
 
     ordering = ['-date_added']
     def __str__(self):
@@ -26,6 +37,7 @@ class RawTransaction(models.Model):
 
 class Transaction(models.Model):
   account = models.ForeignKey(Account)
+  statement = models.ForeignKey(Statement)
   raw = models.ForeignKey(RawTransaction)
   date = models.DateField()
   amount = models.IntegerField()
