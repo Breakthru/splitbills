@@ -13,7 +13,7 @@ class SimpleTag:
                 transaction.tags.add(tag)
                 tag, _ = Tag.objects.get_or_create(name="shopping")
             transaction.tags.add(tag)
-        if "tesco" in simple_check or "poundland" in simple_check or "iceland" in simple_check:
+        if "sainsburys" in simple_check or "tesco" in simple_check or "poundland" in simple_check or "iceland" in simple_check:
             tag, _ = Tag.objects.get_or_create(name="both")
             transaction.tags.add(tag)
             tag, _ = Tag.objects.get_or_create(name="shopping")
