@@ -1,7 +1,7 @@
 from django.shortcuts import render, render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from .forms import UploadFileForm
+from .forms import UploadFileForm, AddTagForm
 from models import Transaction, Tag, Account, RawTransaction, Statement
 from ccparser import ccparser
 from datetime import date, datetime
@@ -73,9 +73,35 @@ def account(request, account_id):
     return render(request, 'splitbill/statements.html', context = {'account': account, 'statements': statements})
 
 
+def addtag(request):
+    form = AddTagForm(request.GET)
+    if form.is_valid():
+        transaction = get_object_or_404(Transaction, pk=request.GET['transaction'])
+        tag, _ = Tag.objects.get_or_create(name=request.GET['tag_name'])
+        transaction.tags.add(tag)
+        return HttpResponseRedirect(reverse("splitbill.statement", kwargs={'statement': transaction.statement.id}))
+    return HttpResponseRedirect(reverse("splitbill.home"))
+
+
+def removetag(request, transaction, tag):
+    transaction = get_object_or_404(Transaction, pk=transaction)
+    tag = get_object_or_404(Tag, pk=tag)
+    transaction.tags.remove(tag)
+    return HttpResponseRedirect(reverse("splitbill.statement", kwargs={'statement': transaction.statement.id}))
+
+
+def tag(request, statement, tag):
+    transactions = Transaction.objects.filter(statement_id=statement).filter(tags__id=tag)
+    total = sum([t.amount for  t in transactions])
+    display_total = u"\xA3 %1.02f" % (total / 100.0,)
+    context = { 'transactions': transactions, 'display_total': display_total, 'tag': tag }
+    return render(request, 'splitbill/transactions.html', context)
+
+
 def statement(request, statement):
     t_list = Transaction.objects.filter(statement_id=statement).order_by('-date')
-    context = { 'transactions': t_list }
+    form = AddTagForm()
+    context = { 'transactions': t_list, 'form': form }
     return render(request, 'splitbill/transactions.html', context)
 
 
@@ -85,6 +111,7 @@ def autotag(request, statement):
     for tr in transactions:
         rule_tags.tag(tr)
     return HttpResponseRedirect(reverse("splitbill.statement", kwargs={'statement': statement}))
+
 
 def upload(request, account):
     if request.method == 'POST':

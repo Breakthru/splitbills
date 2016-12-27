@@ -7,6 +7,9 @@
 {% if transactions %}
 <a href="{% url 'splitbill.autotag' transactions.0.statement.id %}">auto tag</a>
 <a href="{% url 'splitbill.account' transactions.0.account.id %}">back</a>
+{% if tag %}
+<h2>tag: {{ tag.name }}</h2>
+{% endif %}
   {% for t in transactions %}
   <div class="transaction">
     <div class="field"> {{ t.account.name }} </div>
@@ -15,11 +18,22 @@
     <div class="field"> {{ t.description }} </div>
     <div class="field">
       {% for a in t.tags.all %}
-      <button style='tag'>{{ a.name }}</button>
+      <a href="{% url 'splitbill.tag' transactions.0.statement.id a.id %}"><button style='tag'>{{ a.name }}</button></a>
+      <a href="{% url 'splitbill.removetag' t.id a.id %}"><button style='tag'>X</button></a>
       {% endfor %}
+    </div>
+    <div class="field">
+      <form method="get" action="{% url 'splitbill.addtag' %}">
+        <input type="text" name="tag_name" />
+        <input type="hidden" name="transaction" value="{{ t.id }}" />
+        <input type="submit" style="display:none;" />
+      </form>
     </div>
   </div>
   {% endfor %}
+{% endif %}
+{% if display_total %}
+<h2> total: {{ display_total }}</h2>
 {% endif %}
 </div>
 {% endblock %}
