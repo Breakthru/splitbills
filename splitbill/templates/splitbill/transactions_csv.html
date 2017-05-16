@@ -1,0 +1,28 @@
+{% extends 'splitbill/index.html' %}
+
+{% block transactions %}
+
+<div id="transactions">
+  <h2>Transactions:</h2>
+{% if transactions %}
+<a href="{% url 'splitbill.autotag' transactions.0.statement.id %}">auto tag</a>
+<a href="{% url 'splitbill.account' transactions.0.account.id %}">back</a>
+{% if tag %}
+<h2>tag: {{ tag.name }}</h2>
+{% endif %}
+  {% for t in transactions %}
+  <div class="transaction">
+    {{ t.date|date:"Y/m/d" }}, 
+    {{ t.display_amount }}, 
+    {{ t.description }}, 
+      {% for a in t.tags.all %}
+      {{ a.name }},
+      {% endfor %}
+</div>
+  {% endfor %}
+{% endif %}
+{% if display_total %}
+<h2> total: {{ display_total }}</h2>
+{% endif %}
+</div>
+{% endblock %}

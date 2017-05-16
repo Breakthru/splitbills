@@ -104,6 +104,12 @@ def statement(request, statement):
     context = { 'transactions': t_list, 'form': form }
     return render(request, 'splitbill/transactions.html', context)
 
+def statement_csv(request, statement):
+    t_list = Transaction.objects.filter(statement_id=statement).order_by('-date')
+    form = AddTagForm()
+    context = { 'transactions': t_list, 'form': form }
+    return render(request, 'splitbill/transactions_csv.html', context)
+
 
 def autotag(request, statement):
     rule_tags = SimpleTag()
