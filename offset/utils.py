@@ -13,7 +13,7 @@ class MortgageCalculator:
     self.s = 0.0
     self.pot_interest_accrued = 0.0
     self.m = 0.0
-    self.d0 = d0 # 5th of April
+    self.d0 = d0
     self.today = d0
     self.to_savings = 0 # how much in one transaction goes to savings
     self.to_capital = 0 # to capital
