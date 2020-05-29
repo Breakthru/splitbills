@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import os
-from santander2csv import convert
+from santander import santander_convert
 
 def test_conversion():
     with open("test.txt", "w") as fp:

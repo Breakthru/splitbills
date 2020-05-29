@@ -2,11 +2,12 @@
 
 import sys
 import re
-#parser for santander text file
-# date description amount balance
 
-def convert(fp):
-    transactions=[]
+
+def santander_convert(fp):
+"""parser for santander text file format transactions are represented
+as date description amount balance separated by newlines"""
+    transactions=[] # list of transactions to return
     while True:
         line = fp.readline()
         if not line:
@@ -18,18 +19,19 @@ def convert(fp):
         m = re.search('Date:.([0-9]{2}/[0-9]{2}/[0-9]{4})', line)
         if m:
             date = m.group(1)
-            desc = fp.readline().replace(',','_') # desc starts on the 14th character
+            desc = fp.readline().replace(',','_').replace("\"", "'")
             amt = fp.readline()
             amount = re.search('Amount:.(-?[0-9]+\.[0-9]+).',amt).group(1)
             bal = fp.readline()
             balance = re.search('Balance:.(-?[0-9]+\.[0-9]+).',bal).group(1)
+            # desc[13] because description starts on the 14th character
             transactions.append( date+",\""+desc[13:-2]+"\","+amount+","+balance)
     return transactions
 
 
 def main():
     with open(sys.argv[1],'r', encoding='latin_1') as fp:
-        transactions = convert(fp)
+        transactions = santander_convert(fp)
 
     # print transactions in reverse order
     for i in range(len(transactions)-1,-1,-1):
@@ -37,3 +39,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

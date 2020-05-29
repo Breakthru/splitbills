@@ -1,19 +1,14 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 import sys
 import re
 
 
-class ccparser:
-  """parser for santander credit card report file"""
-  def __init__(self):
-    self.transactions=[]
-
-  def parse(self, f):
-    """ f is the file object to parse """
+def tesco_convert(fp):
+    """Date			Card no.			Description				Money in	Money out"""
+    transactions = []
     while True:
-    # Date			Card no.			Description				Money in	Money out
-        line = f.readline().rstrip('\r\n')
+        line = fp.readline().rstrip('\r\n')
         if not line:
             break
         d=line.split('\t')
@@ -48,13 +43,18 @@ class ccparser:
         if idx<0:
             date=cardno
             cardno=''
-        self.transactions.append("%s;%s;%s;%s" % (date, cardno, description, amount))
+        transactions.append("%s;%s;%s;%s" % (date, cardno, description, amount))
+    return transactions
 
 
-if __name__=='__main__':
-  p = ccparser()
-  with open(sys.argv[1],'r') as fp:
-    p.parse(fp)
-  # print transactions in reverse order
-  for t in p.transactions:
-    print t
+def main():
+    with open(sys.argv[1],'r', encoding='latin_1') as fp:
+        transactions = tesco_convert(fp)
+
+    # print transactions in reverse order
+    for i in range(len(transactions)-1,-1,-1):
+        print(transactions[i])
+
+if __name__ == "__main__":
+    main()
+
