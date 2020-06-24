@@ -20,7 +20,7 @@ def test_conversion():
                                                         """)
 
     with open("test.txt",'r') as fp:
-        transactions = convert(fp)
+        transactions = santander_convert(fp)
 
     # print transactions in reverse order
     for i in range(len(transactions)-1,-1,-1):

@@ -5,8 +5,8 @@ import re
 
 
 def santander_convert(fp):
-"""parser for santander text file format transactions are represented
-as date description amount balance separated by newlines"""
+    """parser for santander text file format transactions are represented
+    as date description amount balance separated by newlines"""
     transactions=[] # list of transactions to return
     while True:
         line = fp.readline()
